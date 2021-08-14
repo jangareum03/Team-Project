@@ -38,7 +38,7 @@
   + 마이페이지(주문내역, 문의사항, 회원정보수정, 회원탈퇴, 로그아웃)
 
 ----------------------------
-<img src="https://user-images.githubusercontent.com/84488362/129002280-47c1bb30-d82e-481a-b9e5-d000bf6367c3.mp4">
+<video src="https://user-images.githubusercontent.com/84488362/129002280-47c1bb30-d82e-481a-b9e5-d000bf6367c3.mp4">
 ## 1. 상품 관리(관리자 기능)
 + 상품 등록  
   a. 상품번호, 상품명, 판매가, 수량, 상세설명, 이미지 정보를 입력해 상품등록 가능합니다.
