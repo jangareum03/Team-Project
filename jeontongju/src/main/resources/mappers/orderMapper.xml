@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="orderMapper">
+
+	<!-- 장바구니-->
+	<select id="cart" resultType="com.jeontongju.VO.OrderVO">
+		SELECT 		c.cId, p.pName, p.pImg, c.count, p.pPrice, (c.count * p.pPrice) as money
+		FROM		tr_cart c, tr_member m, tr_product p
+		WHERE		m.userId = c.userId
+		AND			p.pNo = c.pNo
+		AND			c.userId = #{userId}
+		ORDER BY	cId DESC
+	</select>
+
+	<!-- 장바구니 상품 합계 -->
+	<select id="total"  resultType="int">
+		SELECT		NVL(SUM(pPrice * count), 0) money
+		FROM		tr_product p, tr_cart c
+		WHERE		p.pNo = c.pNo
+		AND			c.userId = #{userId}
+	</select>
+	
+	<!-- 장바구니 상품 개별삭제 -->
+	<delete id="deleteItem" >
+		DELETE FROM tr_cart
+		WHERE cId = #{cId}
+	</delete>
+	
+	<!-- 장바구니 상품 전체삭제 -->
+	<delete id="deleteAll">
+		DELETE FROM tr_cart
+		WHERE userId = #{userId}
+	</delete>
+
+	<!-- 주문서 -->
+	<select id="order" resultType="com.jeontongju.VO.OrderVO">
+		SELECT 		p.pName, p.pImg, c.count, p.pPrice, c.cId, c.userId, p.pNo, m.userName, m.userAddr, m.userPhone, (c.count * p.pPrice) as money
+		FROM		tr_member m, tr_product p, tr_cart c
+		WHERE		m.userId = c.userId
+		AND			p.pNo = c.pNo
+		AND			c.cId = #{cId}
+	</select>
+
+
+	<!-- 주문완료 -->
+	<insert id="orderComplete">
+		INSERT INTO tr_order(oId, userId, rName, rAddr, rPhone, oMemo, oDate, oTotal, delivery)
+		VALUES(#{oId}, #{userId}, #{rName}, #{rAddr}, #{rPhone}, #{oMemo}, #{oDate}, #{oTotal}, DEFAULT)
+	</insert>
+	
+	<!-- 상품 수량 변경 -->
+	<update id="orderUpdate">
+		UPDATE tr_product
+		SET		pCount=pCount - #{pCount},
+				pSales= pSales + #{pSales}
+		Where pNo = #{pNo}
+	</update>
+	
+	
+	<!-- 주문내역 삽입 -->
+	<insert id="orderInsert">
+		INSERT INTO tr_orderDetails(oNo, oId, pNo, count)
+		SELECT sq_oDetails.NEXTVAL, #{oId}, pNo, count
+		FROM tr_cart
+		WHERE cId = #{cId}
+	</insert>
+	
+	<!-- 주문완료 상품 삭제 -->
+	<delete id="orderDelete">
+		DELETE FROM tr_cart
+		WHERE userId = #{userId}
+		AND	cId = #{cId}
+	</delete>
+	
+	
+
+</mapper>

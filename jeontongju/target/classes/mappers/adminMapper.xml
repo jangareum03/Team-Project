@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="adminMapper">
+	
+	<!-- 관리자용 문의 사항 관리 -->
+	<select id="qnaList" resultType="com.jeontongju.VO.QnaVO">
+		Select *
+		FROM TR_QNA
+	</select>
+	
+	<!-- 관리자용 주문 내역 불러오기 -->
+	<select id="orderList" resultType="com.jeontongju.VO.OrderVO">
+		Select o.oId,o.userID,o.rAddr,o.rPhone, o.oDate, o.delivery 
+		FROM TR_ORDER o
+
+	</select>
+	
+	<!-- 관리자용 상품관리 -->
+	<select id="productList" resultType="com.jeontongju.VO.ProductVO">
+		Select *
+		FROM TR_PRODUCT
+		ORDER BY pNo DESC
+	</select>
+	
+	<!-- 제품 등록 -->
+	<insert id="productAdd">
+		INSERT INTO TR_PRODUCT(PNO,PNAME,PPRICE,PCOUNT,PINFO,pImg,pThumbImg)
+		VALUES (#{pNo}||sq_${pNo}.nextval,#{pName},#{pPrice},#{pCount},#{pInfo},#{pImg},#{pThumbImg})
+	</insert>
+	
+	<!-- 제품 조회 -->
+	<select id="productView" resultType="com.jeontongju.VO.ProductVO">
+		Select pNO,pName,pPrice,pCount,pInfo,pImg,pThumbImg
+		from tr_product
+		where pNo=#{pNo}
+	</select>
+	
+	<!-- 제품 수정 -->
+	<update id="productModify">
+		update tr_product
+		set pNo=#{pNo},
+			pName=#{pName},
+			pPrice=#{pPrice},
+			pCount=#{pCount},
+			pInfo=#{pInfo}
+		where pNo=#{pNo}
+	</update>
+	
+	<!-- 제품 삭제	 -->
+	<delete id="productDelete">
+	delete	tr_product
+	where pNo = #{pNo}
+	</delete>
+	
+	<!-- 배송 처리 -->
+	<update id="delivery">
+		update TR_ORDER
+			set DELIVERY=#{delivery}
+		where oId=#{oId}
+	</update>
+	
+	<!-- 주문 내역 조회 -->
+	<select id="orderView" resultType="com.jeontongju.VO.OrderVO">
+		Select o.oId,m.userName,m.userPhone,o.rName,o.rPhone,o.rAddr,p.pName,d.count,o.oDate,o.delivery
+		from tr_order o,tr_member m,tr_product p,tr_orderDetails d
+		where o.oId=#{oId}
+		and m.userId=o.userId
+		and d.oId=#{oId}
+		and d.pNo=p.pNo
+		
+		
+	</select>
+	<!-- 주문 수정 -->
+	<update id="orderModify">
+		UPDATE tr_order
+		SET oId=#{oId},
+			rName=#{rName},
+			rPhone=#{rPhone},
+			rAddr=#{rAddr}
+		where oId=#{oId}
+	</update>
+	
+	<!-- 주문 삭제	 -->
+	<delete id="orderDelete">
+	delete	tr_order
+	where oId = #{oId}
+	</delete>
+	
+	<!-- 주문 삭제2-->
+	<delete id="orderDetailsDelete">
+	delete	tr_orderDetails
+	where oId = #{oId}
+	</delete>
+	
+	<!-- 회원 조회 -->
+	<select id="memberView" resultType="com.jeontongju.VO.MemberVO">
+		Select userId,userName,userEmail,userPhone,userAddr,userBday
+		from tr_member
+		where userId=#{userId}
+	</select>
+	
+	<!-- 회원 수정 -->
+	<update id="memberModify">
+		update tr_member
+		set userId=#{userId},
+			userName=#{userName},
+			userEmail=#{userEmail},
+			userPhone=#{userPhone},
+			userAddr=#{userAddr},
+			userBday=#{userBday}
+		where userId=#{userId}
+	</update>
+	<!-- 회원 삭제	 -->
+	<delete id="memberDelete">
+	delete	tr_member
+	where userId = #{userId}
+	</delete>
+	
+	<!-- 문의 사항 조회 -->
+	<select id="qnaView" resultType="com.jeontongju.VO.QnaVO">
+		SELECT qNo,qTitle,qWriter,qContent,qDate
+		FROM tr_qna
+		where qNo=#{qNo}
+	</select>
+	<!-- 문의 사항 삭제	 -->
+	<delete id="qnaDelete">
+	delete	tr_qna
+	where qNo = #{qNo}
+	</delete>
+	
+	<!-- 댓글 조회 -->
+	<select id="replyView" resultType="com.jeontongju.VO.ReplyVO">
+		SELECT qNo,rNo,rContent,rWriter,rDate
+		FROM tr_reply
+		where qNo=#{qNo}
+	</select>
+	<!-- 댓글 작성 -->
+	<insert id="replyWrite">
+		Insert Into tr_reply(qNo,rNo,rContent)
+		Values(#{qNo},sq_reply.nextval,#{rContent})
+	</insert>
+	<!-- 댓글 수정 -->
+	<update id="replyUpdate" parameterType="com.jeontongju.VO.ReplyVO">
+		Update tr_reply SET rContent=#{rContent}
+		where rNo = #{rNo}
+	</update>
+	<!-- 댓글 삭제 -->
+	<delete id="replyDelete" parameterType="com.jeontongju.VO.ReplyVO">
+		Delete From tr_reply
+		where rNo=#{rNo}
+	</delete>
+	<!-- 선택된 댓글 조회 -->
+	<select id="replySelect" resultType="com.jeontongju.VO.ReplyVO">
+		select qNo,rNo,rContent,rWriter,rDate
+		From tr_reply
+		where rNo=#{rNo}
+	</select>
+	
+	
+	
+	
+	
+</mapper>

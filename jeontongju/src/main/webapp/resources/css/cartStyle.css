@@ -1,0 +1,131 @@
+@charset "UTF-8";
+
+
+body{
+	margin: 0px;
+	padding: 0px;
+}
+#header{
+	position: fixed;
+	width: 100%;
+	height: 7.6rem;
+	background: #E3D9CD;
+}
+
+/* 메인 */
+#main .title {
+	width: 15rem;
+	margin-left: auto;
+	margin-right: auto;
+	padding-top: 11rem;
+	padding-bottom: 0.4rem;
+	padding-left: 0.5rem;
+	font-size: 34px;
+	font-weight: 800;
+	text-align: center;
+}
+.crow {
+  --bs-gutter-x: 1.5rem;
+  --bs-gutter-y: 0;
+  flex-wrap: wrap;
+  margin-top: calc(var(--bs-gutter-y) * -1);
+  margin-right: calc(var(--bs-gutter-x) * -.5);
+  margin-left: calc(var(--bs-gutter-x) * -.5);
+}
+
+
+/* 장바구니 */
+#content {
+	width: calc(100% - 20rem);
+	height: 13rem;
+	margin-top: 3.5rem;
+	margin-bottom: 0.5rem;
+	margin-left: 10rem;
+	font-family: 'Gowun Dodum', sans-serif;
+}
+#main table{
+	width: 90%;
+	border-collapse: collapse;
+	text-align: center;
+	table-layout: fixed;
+	margin: 0 auto;
+}
+#main th{
+	background: #66ADD9;
+	padding: 5px;
+}
+#main th:nth-child(1) {
+	width: 5%;
+}
+#main th:nth-child(2) {
+	width: 65%;
+}
+#main th:nth-child(3) {
+	width: 5%;
+}
+#main th:nth-child(4) {
+	width: 15%;
+}
+#main th:nth-child(5) {
+	width: 10%;
+}
+#main .row{
+	border-top: 1.5px solid #5A443F;
+	border-bottom: 1.5px solid #5A443F;
+}
+
+#main .img{
+	width: 200px;
+	height: 300px;
+	float: right;
+}
+#main .info{
+	display: flex;
+	align-items: center;
+}
+
+/* 버튼 */
+#btn{
+	padding: 1.5rem 0;
+	text-align: center;
+	font-weight: bold;
+}
+#btn .dBtn, #content .DBtn{
+	background-color: transparent;
+	border: none;
+	box-shadow: rgba(211, 16, 6, 0.8) 0 0px 0px 2px inset;
+	color: rgba(211, 16, 6, 0.8);
+	padding: 0.5rem 1.2rem;
+	border-radius: 7px;
+}
+#btn .dBtn:hover, #content .DBtn:hover {
+	color: rgba(255, 255, 255, 0.85);
+	box-shadow: rgba(211, 16, 6, 0.8) 0 0px 0px 40px inset;
+}
+#btn .sBtn{
+	background-color: transparent;
+	border: none;
+	box-shadow: rgba(7, 157, 58, 0.8) 0 0px 0px 2px inset;
+	color: rgba(7, 157, 58, 0.8);
+	padding: 0.5rem 1.2rem;
+	border-radius: 7px;
+}
+#btn .sBtn:hover {
+	color: rgba(255, 255, 255, 0.85);
+	box-shadow: rgba(7, 157, 58, 0.8) 0 0px 0px 40px inset;
+}
+#btn .gBtn{
+	background-color: transparent;
+	border: none;
+	box-shadow: rgba(118, 118, 118, 0.8) 0 0px 0px 2px inset;
+	color: rgba(118, 118, 118, 0.8);
+	padding: 0.5rem 1.2rem;
+	border-radius: 7px;
+}
+#btn .gBtn:hover {
+	color: rgba(255, 255, 255, 0.85);
+	box-shadow: rgba(118, 118, 118, 0.8) 0 0px 0px 40px inset;
+}
+.swal-overlay {
+  background-color: rgba(225, 230, 240, 0.45);
+}

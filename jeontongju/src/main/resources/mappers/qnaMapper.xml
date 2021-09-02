@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qnaMapper">
+
+<!-- 게시판 글 작성 -->
+   <insert id="insert">
+	   INSERT INTO TR_QNA(    QNO 
+	   					      , QTITLE 
+	   					      , QCONTENT 
+	   					      , QWRITER 
+	   					      , qpass
+	   					     )
+	                 VALUES(    SQ_QNA.NEXTVAL 
+	                 		  , #{qTitle}
+	                 		  , #{qContent}
+	                 		  , #{qWriter} 
+	                 		  , #{qPass}
+	                 		  )
+   </insert>
+   
+   <!-- 목록 -->
+  <select id="listPage" resultType="com.jeontongju.VO.QnaVO" parameterType="com.jeontongju.VO.SearchCriteria">
+		SELECT  qNO, 
+		        qTITLE, 
+		        qCONTENT,
+		        qWRITER, 
+		        qDATE,
+		        qpass
+		 FROM ( 
+		        SELECT qNO, 
+		               qTITLE, 
+		               qCONTENT, 
+		               qWRITER, 
+		               qDATE,
+		               qpass,
+		               ROW_NUMBER() OVER (ORDER BY qNO DESC) AS RNUM
+		         FROM tr_qna 	
+		         WHERE 1=1 
+		         	<include refid="search"></include>
+		              ) tr_qna
+		WHERE RNUM BETWEEN #{rowStart} AND #{rowEnd}
+		ORDER BY qno desc
+	</select>
+	
+	<!-- 개수 -->
+	<select id="listCount" parameterType="com.jeontongju.VO.SearchCriteria" resultType="int">
+		SELECT COUNT(qNO)
+		   FROM tr_qna
+		   WHERE 1=1
+		<include refid="search"></include>	
+		   AND qNO > 0
+	</select>
+	
+	<sql id="search">
+		<if test="searchType != null">
+			<if test="searchType == 't'.toString()">AND qTITLE LIKE '%' || #{keyword} || '%'</if>
+			<if test="searchType == 'c'.toString()">AND qCONTENT LIKE '%' || #{keyword} || '%'</if>
+			<if test="searchType == 'w'.toString()">AND qWRITER LIKE '%' || #{keyword} || '%'</if>
+			<if test="searchType == 'tc'.toString()">AND (qTITLE LIKE '%' || #{keyword} || '%') or (qCONTENT LIKE '%' || #{keyword} || '%')</if>
+		</if>
+	</sql>
+	
+	<!-- 조회 -->
+	<select id="read" parameterType="int" resultType="com.jeontongju.VO.QnaVO">
+		SELECT	qNO
+			  , qTITLE
+			  , qCONTENT
+			  , qWRITER
+			  , qDATE
+			  , qpass
+		 FROM tr_qna q
+		 WHERE qNO = #{qNo} 
+	</select>
+	<!-- 게시글 삭제위한 댓글 개수 -->
+	<select id="countReply" resultType="int">
+		select count(*) from tr_reply where qno=#{qNo}
+	</select>
+	
+	<!-- 수정 -->
+   <update id="update" parameterType="com.jeontongju.VO.QnaVO">
+
+		UPDATE tr_qna
+		   SET qTITLE    =   #{qTitle},
+		   	   qCONTENT  =   #{qContent}
+		 WHERE qNO = #{qNo} 
+	</update>
+	
+	<!-- 삭제 -->
+	<delete id="delete" parameterType="int">
+		DELETE 
+		  FROM tr_qna
+		 WHERE qNO = #{qNo}
+	</delete>
+	
+	<!-- 댓글 조회-->
+	<select id="readReply" resultType="com.jeontongju.VO.ReplyVO">
+    	SELECT
+    		  RNO, rCONTENT, rWRITER, rDATE
+    	 FROM tr_REPLY
+    	WHERE qNO = #{qNo}
+	</select>
+	<!-- 댓글 작성 -->
+	<insert id="writeReply">
+		INSERT INTO tr_REPLY(
+			qNO
+			, RNO
+			, rCONTENT
+			, rWRITER
+			
+			)
+			VALUES(    #{qNo}
+				, sq_reply.NEXTVAL
+				, #{rContent}
+				, #{rWriter}	)
+	
+	</insert>
+	<!-- 댓글 수정 -->
+	<update id="updateReply" parameterType="com.jeontongju.VO.ReplyVO">
+		UPDATE tr_REPLY SET rCONTENT = #{rContent}
+		WHERE RNO = #{rNo}
+	</update>
+	
+	<!-- 댓글 삭제 -->
+		<delete id="deleteReply" parameterType="com.jeontongju.VO.ReplyVO">
+			DELETE FROM tr_REPLY
+			WHERE RNO = #{rNo}
+		</delete>
+		
+	<!-- 선택된 댓글 조회 -->
+		<select id="selectReply" resultType="com.jeontongju.VO.ReplyVO">
+			SELECT
+					qNO
+				  , RNO
+				  , rCONTENT
+				  , rWRITER
+				  , RDATE
+			  FROM tr_REPLY
+			 WHERE RNO = #{rNo}
+		</select>
+  </mapper>
+
+ 

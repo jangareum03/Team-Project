@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="memberMapper">
+
+	<!-- 회원 가입 -->
+	<insert id="register">
+		 INSERT INTO TR_MEMBER( USERID, 
+		 						USERPASS, 
+		 						USERNAME, 
+		 						USEREMAIL, 
+		 						USERPHONE,
+		 						USERPOSTCODE,
+		 						USERADDR,
+		 						USERDETAILADDR,
+		 						USERBDAY,
+		 						VERIFY)
+ 		 VALUES(#{userId}, 
+ 		 		#{userPass}, 
+ 		 		#{userName}, 
+ 		 		#{userEmail},
+ 		 		#{userPhone},
+ 		 		#{userPostCode},
+ 		 		#{userAddr},
+ 		 		#{userDetailAddr},
+ 		 		#{userBday},
+ 		 		1) 
+	</insert>
+	<!-- 로그인 -->
+   	<select id="login" resultType="com.jeontongju.VO.MemberVO">
+   		Select USERID, USERPASS, VERIFY, USERNAME
+   		FROM TR_MEMBER
+   		Where USERID = #{userId}
+   			AND USERPASS = #{userPass}   	
+   	</select>
+   	
+   	<!-- 패스워드 체크 -->
+   	<select id="passChk" resultType="int">
+   		SELECT COUNT(*) FROM TR_MEMBER
+   		WHERE USERID = #{userId}
+   			AND USERPASS = #{userPass}
+   	</select>
+   	
+   	<!-- 아이디 중복 체크 -->
+	<select id="idChk" resultType="int">
+		SELECT COUNT(*) FROM TR_MEMBER
+		WHERE USERID = #{userId}
+		 And USERID = #{userId}
+	</select>
+	
+	<!-- 회원 관리 -->
+	<select id="memberList" resultType="com.jeontongju.VO.MemberVO">
+		Select *
+		FROM TR_MEMBER
+	</select>
+	
+	<!-- 마이페이지_주문내역-->
+	<select id="order" resultType="com.jeontongju.VO.OrderVO">
+		SELECT 			o.oDate, o.oId, p.pName, p.pImg, p.pPrice, d.count, (p.pPrice * d.count), d.pNo, o.delivery
+		FROM			tr_order o
+		INNER JOIN		tr_orderDetails d ON o.oId = d.oId
+		INNER JOIN		tr_product p ON d.pNo = p.pNo
+		WHERE			o.userId = #{userId}
+		ORDER BY		oDate DESC
+	</select>
+	
+	<!-- 마이페이지_주문내역상세 -->
+	<select id="orderDetail" resultType="com.jeontongju.VO.OrderVO">
+		SELECT 				o.oId, o.userId, o.rName, o.rAddr, o.rPhone, o.oMemo, o.oDate, p.pName, p.pImg, p.pPrice, p.pInfo, d.count, o.delivery, d.pNo, (p.pPrice * d.count)as oTotal
+		FROM 				tr_order o
+		INNER JOIN		tr_orderDetails d ON o.oId = d.oId
+		INNER JOIN		tr_product p ON d.pNo = p.pNo
+		WHERE				o.userId = #{userId}
+		AND					o.oId = #{oId}
+	</select>
+	
+	<!-- 마이페이지_회원정보 조회 -->
+	<select id="info" resultType="com.jeontongju.VO.MemberVO">
+		SELECT 	*
+		FROM		tr_member
+		WHERE	userId = #{userId}
+	</select>	
+	
+	<!-- 마이페이지_문의사항 -->
+	<select id="qna" resultType="com.jeontongju.VO.QnaVO">
+		SELECT		qNo,qTitle, qDate, qContent
+		FROM		tr_qna
+		WHERE		qWriter = #{userId}
+		ORDER BY qDate DESC
+	</select>
+
+	<!-- 마이페이지_회원정보수정 -->
+	<update id="update" >
+		UPDATE 	tr_member
+		SET 	userName = #{userName},
+				userPass = #{userPass},
+				userEmail = #{userEmail},
+				userPhone = #{userPhone},
+				userPostCode = #{userPostCode},
+				userAddr = #{userAddr},
+				userDetailAddr = #{userDetailAddr},
+				userBday = #{userBday}
+		WHERE userId = #{userId}
+	</update>
+	
+	<!-- 마이페이지_회원정보삭제 -->
+	<delete id="delete">
+		DELETE FROM tr_member
+		WHERE userId = #{userId}
+		AND	  userPass = #{userPass}
+	</delete>
+</mapper>
